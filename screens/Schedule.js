@@ -14,7 +14,7 @@ import formatCustomDateString from '../util/formatCustomDateString';
 const thursdaySections = data.Thursday;
 const fridaySections = data.Friday;
 
-const extractKey = ({id}) => id;
+const extractKey = ({ id }) => id;
 
 export default class Schedule extends React.Component {
   static navigationOptions = {
@@ -29,9 +29,9 @@ export default class Schedule extends React.Component {
     this.setState({ selectedDay: item });
   };
 
-  _handlePressRow = (item) => {
-    this.props.navigation.navigate('EventDetails', {})
-  }
+  _handlePressRow = item => {
+    this.props.navigation.navigate('EventDetails', { item });
+  };
 
   renderItem = ({ item }) => {
     return (
@@ -48,7 +48,9 @@ export default class Schedule extends React.Component {
   renderSectionHeader = ({ section }) => {
     return (
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionHeaderText}>{formatCustomDateString(section.key)}</Text>
+        <Text style={styles.sectionHeaderText}>
+          {formatCustomDateString(section.key)}
+        </Text>
       </View>
     );
   };
