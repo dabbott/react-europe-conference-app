@@ -8,30 +8,13 @@ import {
   Image,
 } from 'react-native';
 import ToggleButton from '../components/ToggleButton';
+import data from '../data';
+import formatCustomDateString from '../util/formatCustomDateString';
 
-const thursdaySections = [
-  {
-    key: '8:30 AM',
-    data: [{ key: 0, title: 'Registration, breakfast' }],
-  },
-  {
-    key: '10:00 AM',
-    data: [{ key: 0, title: 'Conference Keynote', speaker: 'Lucy Vatne' }],
-  },
-];
+const thursdaySections = data.Thursday;
+const fridaySections = data.Friday;
 
-const extractKey = ({ id }) => id;
-
-const fridaySections = [
-  {
-    key: '10:30 AM',
-    data: [{ key: 0, title: 'More breakfast' }],
-  },
-  {
-    key: '12:00 PM',
-    data: [{ key: 0, title: 'More Keynote', speaker: 'Lucy Vatne' }],
-  },
-];
+const extractKey = ({id}) => id;
 
 export default class Schedule extends React.Component {
   static navigationOptions = {
@@ -65,7 +48,7 @@ export default class Schedule extends React.Component {
   renderSectionHeader = ({ section }) => {
     return (
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionHeaderText}>{section.key}</Text>
+        <Text style={styles.sectionHeaderText}>{formatCustomDateString(section.key)}</Text>
       </View>
     );
   };
@@ -85,6 +68,7 @@ export default class Schedule extends React.Component {
           />
         </Image>
         <SectionList
+          keyExtractor={extractKey}
           style={styles.list}
           sections={
             selectedDay === 'THURSDAY' ? thursdaySections : fridaySections
