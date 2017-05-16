@@ -25,41 +25,56 @@ export default class FeedbackScreen extends React.Component {
               autoCorrect={false}
               returnKeyType="next"
               style={styles.textInput}
-              onSubmitEditing={() => { this._emailInput.focus() }}
+              onSubmitEditing={() => {
+                this._emailInput.focus();
+              }}
+              blurOnSubmit={false}
             />
           </View>
           <View style={styles.row}>
             <TextInput
-              ref={view => { this._emailInput = view; }}
-              onSubmitEditing={() => { this._phoneNumber.focus() }}
+              ref={view => {
+                this._emailInput = view;
+              }}
+              onSubmitEditing={() => {
+                this._phoneNumber.focus();
+              }}
               returnKeyType="next"
               keyboardType="email-address"
               autoCapitalize="none"
               autoCorrect={false}
               placeholder="Email"
               style={styles.textInput}
+              blurOnSubmit={false}
             />
           </View>
           <View style={styles.row}>
             <TextInput
-              ref={view => { this._phoneNumber = view; }}
+              ref={view => {
+                this._phoneNumber = view;
+              }}
               placeholder="Phone Number"
               keyboardType="phone-pad"
               style={styles.textInput}
               returnKeyType="next"
-              onSubmitEditing={() => { this._feedbackInput.focus() }}
+              blurOnSubmit={false}
+              onSubmitEditing={() => {
+                this._feedbackInput.focus();
+              }}
             />
           </View>
 
           <View style={styles.row}>
             <GrowingTextInput
               minHeight={80}
-              ref={view => { this._feedbackInput = view; }}
+              ref={view => {
+                this._feedbackInput = view;
+              }}
               style={styles.growingTextInput}
               placeholder="Please write at least two or three sentences to share your feedback with us."
+              blurOnSubmit={false}
             />
           </View>
-
 
         </ScrollView>
 
@@ -109,5 +124,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 15,
     fontSize: 15,
-  }
+  },
 });
