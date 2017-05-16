@@ -1,6 +1,30 @@
 import React from "react";
-import { StyleSheet, Text, View, Image } from "react-native";
+import { SectionList, StyleSheet, Text, View, Image } from "react-native";
 import ToggleButton from "../components/ToggleButton";
+
+const thursdaySections = [
+  {
+    key: "8:30 AM",
+    data: [{ key: 0, title: "Registration, breakfast" }]
+  },
+  {
+    key: "10:00 AM",
+    data: [{ key: 0, title: "Conference Keynote", speaker: "Lucy Vatne" }]
+  }
+];
+
+const extractKey = ({ id }) => id;
+
+const fridaySections = [
+  {
+    key: "10:30 AM",
+    data: [{ key: 0, title: "More breakfast" }]
+  },
+  {
+    key: "12:00 PM",
+    data: [{ key: 0, title: "More Keynote", speaker: "Lucy Vatne" }]
+  }
+];
 
 export default class Schedule extends React.Component {
   state = {
@@ -9,6 +33,23 @@ export default class Schedule extends React.Component {
 
   handlePressItem = item => {
     this.setState({ selectedDay: item });
+  };
+
+  renderItem = ({ item }) => {
+    return (
+      <View style={styles.row} key={item.key}>
+        <Text style={styles.rowTitle}>{item.title}</Text>
+        <Text style={styles.rowSpeaker}>{item.speaker}</Text>
+      </View>
+    );
+  };
+
+  renderSectionHeader = ({ section }) => {
+    return (
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionHeaderText}>{section.key}</Text>
+      </View>
+    );
   };
 
   render() {
@@ -25,6 +66,14 @@ export default class Schedule extends React.Component {
             onPressItem={this.handlePressItem}
           />
         </Image>
+        <SectionList
+          style={styles.list}
+          sections={
+            selectedDay === "THURSDAY" ? thursdaySections : fridaySections
+          }
+          renderItem={this.renderItem}
+          renderSectionHeader={this.renderSectionHeader}
+        />
       </View>
     );
   }
@@ -34,6 +83,27 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff"
+  },
+  list: {
+    flex: 1
+  },
+  sectionHeader: {
+    backgroundColor: "whitesmoke",
+    padding: 20
+  },
+  sectionHeaderText: {
+    fontSize: 13
+  },
+  row: {
+    backgroundColor: "white",
+    padding: 20
+  },
+  rowTitle: {
+    fontSize: 13,
+    fontWeight: "500"
+  },
+  rowSpeaker: {
+    fontSize: 13
   },
   image: {
     paddingVertical: 30,
