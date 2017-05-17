@@ -1,5 +1,5 @@
-import React from 'react';
-import { Constants } from 'expo';
+import React from "react";
+import { Constants } from "expo";
 import {
   TextInput,
   ScrollView,
@@ -7,21 +7,100 @@ import {
   Text,
   StyleSheet,
   StatusBar,
-} from 'react-native';
-import GrowingTextInput from '../components/GrowingTextInput';
+  Button,
+  Animated
+} from "react-native";
+import GrowingTextInput from "../components/GrowingTextInput";
+import Swipeable from "../components/Swipeable";
+import Modal from "react-native-root-modal";
+
+const calculateOpacity = x => Math.max(0, 100 - Math.abs(x)) / 100;
 
 export default class FeedbackScreen extends React.Component {
   static navigationOptions = {
-    title: 'Feedback',
-  }
+    title: "Feedback"
+  };
+
+  state = {
+    modalVisible: false,
+    modalOpacity: new Animated.Value(0)
+  };
 
   render() {
+    const { modalVisible, modalOpacity } = this.state;
+
     return (
       <View style={{ flex: 1 }}>
+        <Modal
+          style={{
+            ...StyleSheet.absoluteFillObject,
+            backgroundColor: "transparent",
+            justifyContent: "center",
+            alignItems: "center"
+          }}
+          visible={modalVisible}
+        >
+          <Animated.View
+            style={{
+              opacity: modalOpacity,
+              backgroundColor: "rgba(0,0,0,0.5)",
+              ...StyleSheet.absoluteFillObject
+            }}
+          />
+          <Swipeable
+            onMove={({ x }) => {
+              let newOpacity = calculateOpacity(x);
+
+              modalOpacity.setValue(newOpacity);
+            }}
+            onEnd={({ x }) => {
+              let newOpacity = calculateOpacity(x);
+
+              if (newOpacity < 0.1) {
+                this.setState({ modalVisible: false });
+                modalOpacity.setValue(0);
+              } else {
+                Animated.spring(modalOpacity, { toValue: 1 }).start();
+              }
+            }}
+          >
+            <Animated.View
+              style={{
+                opacity: modalOpacity,
+                width: 300,
+                height: 300,
+                backgroundColor: "white",
+                borderRadius: 15,
+                padding: 30,
+                justifyContent: "center",
+                alignItems: "center"
+              }}
+            >
+              <Text style={{ marginBottom: 15 }}>
+                Do you want to autofill your contact info from Facebook?
+              </Text>
+              <Button
+                title={"Login to Facebook"}
+                onPress={() => this.setState({ modalVisible: false })}
+              />
+              <Text style={{ marginTop: 15 }}>No thanks!</Text>
+            </Animated.View>
+          </Swipeable>
+        </Modal>
         <ScrollView
           keyboardDismissMode="on-drag"
           contentContainerStyle={{ paddingTop: 30 }}
-          style={{ flex: 1, backgroundColor: '#F8F8F9' }}>
+          style={{ flex: 1, backgroundColor: "#F8F8F9" }}
+        >
+          <Button
+            title={"Autofill contact info"}
+            onPress={() => {
+              const { modalOpacity } = this.state;
+
+              Animated.spring(modalOpacity, { toValue: 1 }).start();
+              this.setState({ modalVisible: true });
+            }}
+          />
           <View style={[styles.row, styles.firstRow]}>
             <TextInput
               placeholder="Full name"
@@ -91,26 +170,26 @@ const styles = StyleSheet.create({
   container: {},
   titleText: {
     fontSize: 18,
-    color: '#fff',
-    fontWeight: '600',
+    color: "#fff",
+    fontWeight: "600"
   },
   row: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#ccc',
+    borderBottomColor: "#ccc"
   },
   firstRow: {
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: '#ccc',
+    borderTopColor: "#ccc"
   },
   textInput: {
     flex: 1,
     height: 45,
-    paddingHorizontal: 15,
+    paddingHorizontal: 15
   },
   growingTextInput: {
     paddingHorizontal: 15,
     paddingVertical: 15,
-    fontSize: 15,
-  },
+    fontSize: 15
+  }
 });
