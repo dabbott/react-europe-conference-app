@@ -8,13 +8,16 @@ import {
   StyleSheet,
   StatusBar,
   Button,
-  Animated
+  Animated,
+  AsyncStorage
 } from "react-native";
 import GrowingTextInput from "../components/GrowingTextInput";
 import Swipeable from "../components/Swipeable";
 import Modal from "react-native-root-modal";
 
 const calculateOpacity = x => Math.max(0, 100 - Math.abs(x)) / 100;
+
+const NAME_FIELD_KEY = "NAME_FIELD_KEY";
 
 export default class FeedbackScreen extends React.Component {
   static navigationOptions = {
@@ -23,11 +26,27 @@ export default class FeedbackScreen extends React.Component {
 
   state = {
     modalVisible: false,
-    modalOpacity: new Animated.Value(0)
+    modalOpacity: new Animated.Value(0),
+    name: ""
+  };
+
+  componentWillMount = async () => {
+    try {
+      const name = await AsyncStorage.getItem(NAME_FIELD_KEY);
+      if (name !== null) {
+        this.setState({ name });
+      }
+    } catch (error) {
+      // Error retrieving data
+    }
   };
 
   render() {
     const { modalVisible, modalOpacity } = this.state;
+
+    // if (!this.state.name) {
+    //   return <ActivityIndicator />
+    // }
 
     return (
       <View style={{ flex: 1 }}>
@@ -104,11 +123,21 @@ export default class FeedbackScreen extends React.Component {
           <View style={[styles.row, styles.firstRow]}>
             <TextInput
               placeholder="Full name"
+              value={this.state.name}
+              onChangeText={name => this.setState({ name })}
               autoCapitalize="words"
               autoCorrect={false}
               returnKeyType="next"
               style={styles.textInput}
-              onSubmitEditing={() => {
+              onSubmitEditing={async () => {
+                try {
+                  await AsyncStorage.setItem(NAME_FIELD_KEY, this.state.name);
+
+                  console.log(this.state.name);
+                } catch (e) {
+                  console.log("error saving", this.state.name);
+                }
+
                 this._emailInput.focus();
               }}
               blurOnSubmit={false}
